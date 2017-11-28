@@ -1,0 +1,37 @@
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+var ts  = fso.OpenTextFile(WSH.Arguments(0));
+var str ="";
+while(!ts.AtEndOfStream)
+	str+=ts.ReadLine();
+ts.Close();
+function GetTable(t){
+	var m=t.length;
+	var alph=new Array();
+	for(var i=0;i<pattern.length;i++)
+		alph[pattern.charAt(i)]=0;
+		var del=new Array(m+1);
+	for(j=0;j<=m;j++)
+		del[j]=new Array();
+		for(i in alph)
+		del[0][i]=0;
+		for(j=0;j<m;j++){
+		prev=del[j][t.charAt(j)];
+		del[j][t.charAt(j)]=j+1;
+		for(i in alph)
+			del[j+1][i]=del[prev][i];
+	}
+	return del;	
+}
+var pattern=WScript.StdIn.ReadLine();
+var table = GetTable(pattern);
+var result = new Array();
+var state =0;
+for (var i=0; i<=str.length; i++){
+	if(typeof(table[state][str.charAt(i)]) != "undefined")
+		state = table[state][str.charAt(i)];
+	else 
+		state =0;
+	if (state == pattern.length)
+		result.push(i-pattern.length+1);
+}
+WScript.Echo(result.length);
